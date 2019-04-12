@@ -11,14 +11,6 @@ class UsersManager:
         self.fr = FaceRecognizer()
         self.averge_value = list()
 
-    def sign_up(self, name, image):
-        description, dets = self.fr.calculate_128D(image)
-        self.fr.draw_128D(image, dets)
-        if len(description) > 0:
-            writer = pd.ExcelWriter("./Users/" + name + ".xlsx", engine='xlsxwriter')
-            data = pd.DataFrame(description[0])
-            data.to_excel(writer, '128D', float_format='%.9f')
-            writer.save()
 
     def sign_in(self, image):
         users = self.get_user()
@@ -31,6 +23,10 @@ class UsersManager:
 
         return ''
 
+    def show_face_image(self, image):
+        description, dets = self.fr.calculate_128D(image)
+        self.fr.draw_128D(image, dets)
+
     def get_user(self):
         users = dict()
         for f in os.listdir("Users"):
@@ -40,21 +36,28 @@ class UsersManager:
                 users[f[:-5]] = desc
         return users
 
-    def load_cache(self):
+    def sign_up(self, username):
         for _, _, filenames in os.walk("cache"):
             for cache in filenames:
                 cache_image = cv2.cvtColor(cv2.imread('cache/' + cache, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
                 description, _ = self.fr.calculate_128D(cache_image)
-                self.averge_value.append(description)
-        try:
-            return np.average(self.averge_value, axis=1)
-        except IndexError:
-            return []
+                cv2.imshow("frame", cache_image)
+                if len(description) > 0:
+                    self.averge_value.append(description)
+
+        print(self.averge_value)
+        np_average = np.array(self.averge_value)
+        print(np_average)
+        desc = np.average(np_average, axis=0)
+        writer = pd.ExcelWriter("./Users/" + username + ".xlsx", engine='xlsxwriter')
+        data = pd.DataFrame(desc)
+        data.to_excel(writer, '128D', float_format='%.9f')
+        writer.save()
 
 
 class FaceRecognizer:
     def __init__(self):
-        _shape_dat = "lib/shape_predictor_68_face_landmarks.dat"
+        _shape_dat = "./lib/shape_predictor_68_face_landmarks.dat"
         _face_dat = "lib/dlib_face_recognition_resnet_model_v1.dat"
 
         self._detector = dlib.get_frontal_face_detector()
@@ -117,3 +120,7 @@ if __name__ == '__main__':
             os.system("del /S /q cache")
             break
         i += 1
+
+    print("HI")
+    cap.release()
+    cv2.destroyAllWindows()

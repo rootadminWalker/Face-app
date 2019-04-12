@@ -1,24 +1,25 @@
 import Recognize
 import cv2
+import os
 
-username = input("Who are you? ")
-print("Always press q in the camera window to exit")
-
-Recognize.show_info("Preparing dlib")
 um = Recognize.UsersManager()
 fr = Recognize.FaceRecognizer()
-Recognize.show_info("Finding camera")
 cap = cv2.VideoCapture(0)
-Recognize.show_info("Camera found")
-Recognize.show_info("Opening camera for recognition")
+i = 0
 
 while True:
 	success, frame = cap.read()
 	if not success:
-		Recognize.show_info("There is an error when reading the camera, Please check your camera or the security settings")
 		break
-	um.sign_up(username, frame)
+
+	um.show_face_image(frame)
+	if not os.path.exists("cache/frame" + str(i) + ".jpg"):
+		cv2.imwrite('cache/frame' + str(i) + ".jpg", frame)
+
 	cv2.imshow("frame", frame)
 
 	if cv2.waitKey(1) == ord('q'):
 		break
+	i += 1
+um.sign_up("Thomas_Leong")
+os.system("del /S /q cache")
