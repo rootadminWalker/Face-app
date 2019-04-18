@@ -11,7 +11,6 @@ class UsersManager:
         self.fr = FaceRecognizer()
         self.averge_value = list()
 
-
     def sign_in(self, image):
         users = self.get_user()
         desc, dets = self.fr.calculate_128D(image)
@@ -50,14 +49,14 @@ class UsersManager:
         print(np_average)
         desc = np.average(np_average, axis=0)
         writer = pd.ExcelWriter("./Users/" + username + ".xlsx", engine='xlsxwriter')
-        data = pd.DataFrame(desc)
+        data = pd.DataFrame(desc[0])
         data.to_excel(writer, '128D', float_format='%.9f')
         writer.save()
 
 
 class FaceRecognizer:
     def __init__(self):
-        _shape_dat = "./lib/shape_predictor_68_face_landmarks.dat"
+        _shape_dat = "lib/shape_predictor_68_face_landmarks.dat"
         _face_dat = "lib/dlib_face_recognition_resnet_model_v1.dat"
 
         self._detector = dlib.get_frontal_face_detector()
@@ -122,5 +121,6 @@ if __name__ == '__main__':
         i += 1
 
     print("HI")
+    cap.grab()
     cap.release()
     cv2.destroyAllWindows()
