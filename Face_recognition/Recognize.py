@@ -44,9 +44,8 @@ class UsersManager:
                 if len(description) > 0:
                     self.averge_value.append(description)
 
-        print(self.averge_value)
         np_average = np.array(self.averge_value)
-        print(np_average)
+        print("Average value --> ", np_average)
         desc = np.average(np_average, axis=0)
         writer = pd.ExcelWriter("./Users/" + username + ".xlsx", engine='xlsxwriter')
         data = pd.DataFrame(desc[0])

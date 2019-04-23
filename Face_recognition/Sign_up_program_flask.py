@@ -23,3 +23,5 @@ while True:
 	i += 1
 um.sign_up("Thomas_Leong")
 os.system("del /S /q cache")
+cv2.destroyAllWindows()
+cap.release()
