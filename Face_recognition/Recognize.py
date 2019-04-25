@@ -22,10 +22,6 @@ class UsersManager:
 
         return ''
 
-    def show_face_image(self, image):
-        description, dets = self.fr.calculate_128D(image)
-        self.fr.draw_128D(image, dets)
-
     def get_user(self):
         users = dict()
         for f in os.listdir("Users"):
@@ -61,6 +57,10 @@ class FaceRecognizer:
         self._detector = dlib.get_frontal_face_detector()
         self._predictor = dlib.shape_predictor(_shape_dat)
         self._recognizer = dlib.face_recognition_model_v1(_face_dat)
+
+    def show_face_image(self, image):
+        description, dets = self.fr.calculate_128D(image)
+        self.fr.draw_128D(image, dets)
 
     def calculate_128D(self, image):
         descriptions = list()
