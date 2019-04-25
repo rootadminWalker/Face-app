@@ -59,8 +59,8 @@ class FaceRecognizer:
         self._recognizer = dlib.face_recognition_model_v1(_face_dat)
 
     def show_face_image(self, image):
-        description, dets = self.fr.calculate_128D(image)
-        self.fr.draw_128D(image, dets)
+        description, dets = self.calculate_128D(image)
+        self.draw_128D(image, dets)
 
     def calculate_128D(self, image):
         descriptions = list()
