@@ -1,7 +1,9 @@
+#!/usr/bin/python3
 import Recognize
 import cv2
 import os
 
+username = input("Who are you? ")
 um = Recognize.UsersManager()
 fr = Recognize.FaceRecognizer()
 cap = cv2.VideoCapture(0)
@@ -22,7 +24,7 @@ while True:
 		break
 
 	i += 1
-um.sign_up("Thomas_Leong")
+um.sign_up(username)
 os.system("del /S /q cache")
 cv2.destroyAllWindows()
 cap.release()

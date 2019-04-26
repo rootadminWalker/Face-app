@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import dlib
 import cv2
 import pandas as pd
@@ -51,8 +52,8 @@ class UsersManager:
 
 class FaceRecognizer:
     def __init__(self):
-        _shape_dat = "lib/shape_predictor_68_face_landmarks.dat"
-        _face_dat = "lib/dlib_face_recognition_resnet_model_v1.dat"
+        _shape_dat = "./lib/shape_predictor_68_face_landmarks.dat"
+        _face_dat = "./lib/dlib_face_recognition_resnet_model_v1.dat"
 
         self._detector = dlib.get_frontal_face_detector()
         self._predictor = dlib.shape_predictor(_shape_dat)
@@ -115,7 +116,7 @@ if __name__ == '__main__':
             pass
 
         if cv2.waitKey(1) == ord('q'):
-            os.system("del /S /q cache")
+            os.system("rm -rf cache/*")
             break
         i += 1
 
