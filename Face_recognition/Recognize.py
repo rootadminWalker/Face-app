@@ -39,7 +39,7 @@ class UsersManager:
                 description, _ = self.fr.calculate_128D(cache_image)
                 cv2.imshow("frame", cache_image)
                 if len(description) > 0:
-                    self.averge_value.append(description)
+                    self.averge_value.append(np.array(description))
 
         np_average = np.array(self.averge_value)
         print("Average value --> ", np_average)
@@ -97,7 +97,7 @@ def show_info(*args):
 if __name__ == '__main__':
     show_info("Preparing dlib")
     um = UsersManager()
-    fr = FaceRecognizer()
+    fr = FaceRecognizer()    
     show_info("Finding camera")
     cap = cv2.VideoCapture(0)
     show_info("Camera found")
@@ -116,6 +116,7 @@ if __name__ == '__main__':
             pass
 
         if cv2.waitKey(1) == ord('q'):
+            show_info("Clearing cache")
             os.system("rm -rf cache/*")
             break
         i += 1

@@ -25,6 +25,6 @@ while True:
 
 	i += 1
 um.sign_up(username)
-os.system("del /S /q cache")
+os.system("rm -rf cache/*")
 cv2.destroyAllWindows()
 cap.release()
