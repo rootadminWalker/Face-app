@@ -33,14 +33,17 @@ class UsersManager:
         return users
 
     def sign_up(self, username):
+        print("Loading cache...")
         for _, _, filenames in os.walk("cache"):
             for cache in filenames:
                 cache_image = cv2.cvtColor(cv2.imread('cache/' + cache, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
+                print("Loaded cache: {}".format(cache))
                 description, _ = self.fr.calculate_128D(cache_image)
-                cv2.imshow("frame", cache_image)
+                print("Calculated cache: {}".format(cache))
                 if len(description) > 0:
                     self.averge_value.append(np.array(description))
 
+        print("Start calculating...")
         np_average = np.array(self.averge_value)
         print("Average value --> ", np_average)
         desc = np.average(np_average, axis=0)
