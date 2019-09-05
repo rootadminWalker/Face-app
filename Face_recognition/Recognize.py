@@ -6,7 +6,6 @@ import numpy as np
 import os
 from datetime import datetime
 
-
 class UsersManager:
     def __init__(self):
         self.fr = FaceRecognizer()
@@ -46,12 +45,12 @@ class UsersManager:
         print("Start calculating...")
         np_average = np.array(self.averge_value)
         print("Average value --> ", np_average)
+        print(len(self.averge_value))
         desc = np.average(np_average, axis=0)
         writer = pd.ExcelWriter("./Users/" + username + ".xlsx", engine='xlsxwriter')
         data = pd.DataFrame(desc[0])
         data.to_excel(writer, '128D', float_format='%.9f')
         writer.save()
-
 
 class FaceRecognizer:
     def __init__(self):
@@ -90,17 +89,15 @@ class FaceRecognizer:
             for x in range(68):
                 cv2.circle(image, (shape.part(x).x, shape.part(x).y), 3, (0, 0, 255), 1)
 
-
 def show_info(*args):
     for arg in args:
         text = ''.join(arg)
         print("[INFO@" + str(datetime.today()) + "*]" + text)
 
-
 if __name__ == '__main__':
     show_info("Preparing dlib")
     um = UsersManager()
-    fr = FaceRecognizer()    
+    fr = FaceRecognizer()
     show_info("Finding camera")
     cap = cv2.VideoCapture(0)
     show_info("Camera found")

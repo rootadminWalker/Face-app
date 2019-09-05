@@ -45,15 +45,18 @@ def index():
 @app.route("/collect_data", methods=['POST', 'GET'])
 def add_account():
     global x, _new_username
+    print("Getting media")
     image = request.files['media']
     image.save("temp.jpg")
     image = cv2.imread("temp.jpg", cv2.IMREAD_COLOR)
-    
+
+    print("Media saved")
+
     if not os.path.exists("./cache/frame" + str(x) + ".jpg"):
         cv2.imwrite('./cache/frame' + str(x) + ".jpg", image)
         x += 1
 
-    return "Ok"
+    return "ok"
 
 
 @app.route("/request_new_user", methods=["POST", 'GET'])
