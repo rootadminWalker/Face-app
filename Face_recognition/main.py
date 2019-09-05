@@ -32,7 +32,6 @@ def index():
     imagefile = request.files['media']
     print(imagefile)
     imagefile.save('temp.jpg')
-    os.system("copy temp.jpg D:\\image_recognition_test\\images\\" + str(i) + ".jpg")
 
     image = cv2.cvtColor(cv2.imread('temp.jpg', cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
 

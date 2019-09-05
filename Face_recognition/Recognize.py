@@ -12,23 +12,37 @@ class UsersManager:
         self.averge_value = list()
 
     def sign_in(self, image):
+        # result = list()
+        most_common_element = int(0)
         users = self.get_user()
         desc, dets = self.fr.calculate_128D(image)
         if len(desc) > 0:
             self.fr.draw_128D(image, dets)
+
             for key, val in users.items():
-                if self.fr.recognize_user(val, desc[0]):
+                result = list()
+                for landmarks in val:
+                    result.append(int(self.fr.recognize_user(landmarks, desc[0])))
+                    final_result = np.bincount(result)
+                    most_common_element = np.argmax(final_result)
+
+
+                if most_common_element:
                     return key
 
         return ''
 
     def get_user(self):
         users = dict()
+        # all_description = list()
         for f in os.listdir("Users"):
-            if f.endswith(".xlsx"):
-                data = pd.read_excel("Users/" + f)
+            user_base = os.listdir(os.path.join("Users", f))
+            all_description = list()
+            for user in user_base:
+                data = pd.read_excel("Users/" + f + os.sep + user)
                 desc = np.array(data.iloc[:, 1].values.tolist()).reshape(1, -1)[0]
-                users[f[:-5]] = desc
+                all_description.append(desc)
+                users[f] = all_description
         return users
 
     def sign_up(self, username):
@@ -40,17 +54,21 @@ class UsersManager:
                 description, _ = self.fr.calculate_128D(cache_image)
                 print("Calculated cache: {}".format(cache))
                 if len(description) > 0:
-                    self.averge_value.append(np.array(description))
+                    self.averge_value.append(description)
 
         print("Start calculating...")
-        np_average = np.array(self.averge_value)
-        print("Average value --> ", np_average)
-        print(len(self.averge_value))
-        desc = np.average(np_average, axis=0)
-        writer = pd.ExcelWriter("./Users/" + username + ".xlsx", engine='xlsxwriter')
-        data = pd.DataFrame(desc[0])
-        data.to_excel(writer, '128D', float_format='%.9f')
-        writer.save()
+        all_data = np.array(self.averge_value)
+        print("All value --> ", all_data)
+        if not os.path.isdir("./Users/" + username):
+            os.mkdir("./Users/" + username)
+
+        i = 0
+        for desc in all_data:
+            writer = pd.ExcelWriter("./Users/" + username + os.sep + username + str(i) + ".xlsx", engine='xlsxwriter')
+            data = pd.DataFrame(desc[0])
+            data.to_excel(writer, '128D', float_format='%.9f')
+            writer.save()
+            i += 1
 
 class FaceRecognizer:
     def __init__(self):
@@ -72,7 +90,7 @@ class FaceRecognizer:
             shape = self._predictor(image, d)
             description = np.array(self._recognizer.compute_face_descriptor(image, shape))
             descriptions.append(description)
-        return descriptions, dets
+        return np.array(descriptions), dets
 
     def recognize_user(self, d1, d2):
         dist = np.sqrt(np.sum(np.square(d1 - d2)))
