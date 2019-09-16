@@ -62,9 +62,10 @@ class UsersManager:
         if not os.path.isdir("./Users/" + username):
             os.mkdir("./Users/" + username)
 
+        date = datetime.today().date()
         i = 0
         for desc in all_data:
-            writer = pd.ExcelWriter("./Users/" + username + os.sep + username + str(i) + ".xlsx", engine='xlsxwriter')
+            writer = pd.ExcelWriter("./Users/" + username + os.sep + username + "_" + str(i) + "_" + str(date) + ".xlsx", engine='xlsxwriter')
             data = pd.DataFrame(desc[0])
             data.to_excel(writer, '128D', float_format='%.9f')
             writer.save()
